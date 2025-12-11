@@ -2,6 +2,8 @@
 #include <memory>
 #include <vector>
 
+#include <gtest/gtest.h>
+
 template <typename T>
 struct Node {
     T value;
@@ -127,27 +129,81 @@ public:
             std::cout << std::endl;
         }
 
+        static bool Compare (LinkedList<int> &list1, LinkedList<int> &list2)
+        {
+            if (list1.size != list2.size)
+                return false;
+
+            Node<T>* tmp1 = list1.head;
+            Node<T>* tmp2 = list2.head;
+
+            while(tmp1 && tmp2)
+            {
+                if (tmp1->value != tmp2->value)
+                    return false;
+
+                tmp1 = tmp1->next;
+                tmp2 = tmp2->next;
+            }
+
+            return true;
+        }
+
 };
 
 
+struct LinkedListTest2 : public testing::Test {
+  LinkedList<int> list1;
+  LinkedList<int> list2;
 
-int main() {
-    std::cout << "Hello, world!" << std::endl; // prints text and ends line
+  void SetUp() {
+      for (int i = 0; i < 10; i++) {
+          list1.Append(i);
+          list2.Append(i);
+      }
 
-        LinkedList <int> list;
+      std::cout << "init setup: " << std::endl;
 
-        for (int i = 0; i < 10; i++)
-            list.Append(i);
+      list1.Print();
+      list2.Print();
 
-        list.Print();
-
-
-        std::cout << "Delete" << std::endl;
-
-        list.DeleteVal(5);
-
-        list.Print();
+  } // аналог конструктора
 
 
-    return 0;
+  void TearDown() {
+
+      list1.Clear();
+      list2.Clear();
+
+      std::cout << "deinit: " << std::endl;
+
+      list1.Print();
+      list2.Print();
+  } // аналог деструктора
+};
+
+
+TEST_F (LinkedListTest2, test2) {
+    EXPECT_TRUE(LinkedList<int>::Compare(this->list1, this->list2));
 }
+
+
+TEST (LinkedListTest, comparetwolinkedlists)
+{
+    LinkedList <int> list1;
+    LinkedList <int> list2;
+
+    for (int i = 0; i < 10; i++) {
+        list1.Append(i);
+        list2.Append(i);
+    }
+
+    EXPECT_TRUE(LinkedList<int>::Compare(list1, list2));
+}
+
+int main(int argc, char **argv) {
+    // GTest сам запускает тесты
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
