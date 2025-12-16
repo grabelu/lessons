@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#include "common_string.h"
+
 template <typename T>
 struct Node {
     T value;
@@ -201,9 +203,18 @@ TEST (LinkedListTest, comparetwolinkedlists)
     EXPECT_TRUE(LinkedList<int>::Compare(list1, list2));
 }
 
+
+TEST (CommonStringTest, InitByNullptr) {
+
+    ASSERT_NO_THROW ( {CommonString str(nullptr);} );
+}
+
+
+
 int main(int argc, char **argv) {
     // GTest сам запускает тесты
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+
 
